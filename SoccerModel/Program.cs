@@ -9,7 +9,7 @@ namespace SoccerModel
 {
     class Program
     {
-        private const int num_matches = 40000;
+        private const int num_matches = 500000;
         
         static void Main(string[] args)
         {

@@ -6,17 +6,35 @@ using System.Threading.Tasks;
 
 namespace SoccerModel
 {
+
+    /*
+    private State HomeDefence = new State(0.2, 0.3, 0.3, 0, 0, 0.2, 0, 0);
+    private State HomeCenter = new State(0.299, 0.1, 0.3, 0, 0.3, 0, 0.001, 0);
+    private State HomeAttack = new State(0.1, 0.36, 0.2, 0.3, 0, 0, 0.04, 0);
+    private State AwayDefence = new State(0, 0, 0.3, 0.1, 0.3, 0.3, 0, 0);
+    private State AwayCenter = new State(0, 0.3, 0, 0.299, 0.1, 0.3, 0, 0.001);
+    private State AwayAttack = new State(0.6, 0, 0, 0.1, 0.18, 0.1, 0, 0.02);
+    private State HomeGoal = new State(0, 0, 0, 0, 1, 0, 0, 0);
+    private State AwayGoal = new State(0, 1, 0, 0, 0, 0, 0, 0);
+
+    Home wins: 65%
+    Draw: 20%
+    Away wins: 15%
+
+    Average home goals: 1.4
+    Average away goals: 0.4
+
+    Max Home Goals: 5
+    Max Away Goals: 3
+    Min Home Goals: 0
+    Min Away Goals: 0
+
+    */
+
     class StateMachine
     {
         private State CurrentState; 
-        private State HomeDefence = new State(0,0.5,0.3,0,0,0.2,0,0);
-        private State HomeCenter = new State(0.299,0,0.4,0,0.3,0,0.001,0);
-        private State HomeAttack = new State(0.1,0.3,0,0.5,0,0,0.1,0);
-        private State AwayDefence = new State(0,0,0.3,0,0.4,0.3,0,0);
-        private State AwayCenter = new State(0,0.4,0,0.299,0,0.3,0,0.001);
-        private State AwayAttack = new State(0.6,0,0,0.1,0.2,0,0,0.1);
-        private State HomeGoal = new State(0,0,0,0,1,0,0,0);
-        private State AwayGoal = new State(0,1,0,0,0,0,0,0);
+        
         private double MatchTime = 0d;
 
         private Random NumberGen = new Random();
