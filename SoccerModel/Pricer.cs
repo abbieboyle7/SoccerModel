@@ -13,6 +13,12 @@ namespace SoccerModel
 
         
 
+        private float maxHomeGoals;
+        private float maxAwayGoals;
+
+        private float MinHomeGoals;
+        private float MinAwayGoals;
+
         public void Price(Match[] matches)
         {
             int[][] fullTimeGoals = new int[matches.Length][];
@@ -28,6 +34,24 @@ namespace SoccerModel
                 halfTimeGoals[i][1] = matches[i].GetAwayFirstHalfGoals();
 
 
+
+                if(match.TeamHomeGoal > maxHomeGoals)
+                {
+                    maxHomeGoals = match.TeamHomeGoal;
+                }
+                else if(match.TeamHomeGoal < MinHomeGoals)
+                {
+                    MinHomeGoals = match.TeamHomeGoal;
+                }
+
+                if (match.TeamAwayGoal > maxAwayGoals)
+                {
+                    maxAwayGoals = match.TeamAwayGoal;
+                }
+                else if(match.TeamAwayGoal < MinAwayGoals)
+                {
+                    MinAwayGoals = match.TeamAwayGoal;
+                }
 
             }
 
@@ -89,6 +113,14 @@ namespace SoccerModel
 
         public  String GetResults()
         {
+
+//             float[] wdw = GetWinDrawWinProbabilities();
+//             float AverageHomeGoals = GetAverageHomeGoals();
+//             float AverageAwayGoals = GetAverageAwayGoals();
+
+//             return $"Home: {wdw[0]} Draw: {wdw[1]} Away: {wdw[2]}\nAverage Home Goals: {AverageHomeGoals} " +
+//                 $"\nAverage Away Goals: {AverageAwayGoals} \nMax Home Goals: {maxHomeGoals}\nMax Away Goals: {maxAwayGoals}" +
+//                 $"\nMin Home Goals: {MinHomeGoals}\nMin Away Goals: {MinAwayGoals}";
             float[] wdw = GetWinDrawWinProbabilities(FullTimeGoals);
             float[] HalfTimeWdw = GetWinDrawWinProbabilities(HalfTimeGoals);
 
