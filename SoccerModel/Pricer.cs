@@ -8,12 +8,10 @@ namespace SoccerModel
 {
     class Pricer
     {
-        private float HomeWin;
-        private float AwayWin;
-        private float Draw;
-        private float HomeGoals;
-        private float AwayGoals;
-        private int NumMatches;
+        private int[][] FullTimeGoals;
+        public int[][] HalfTimeGoals;
+
+        
 
         private float maxHomeGoals;
         private float maxAwayGoals;
@@ -23,26 +21,19 @@ namespace SoccerModel
 
         public void Price(Match[] matches)
         {
-            NumMatches = matches.Length;
+            int[][] fullTimeGoals = new int[matches.Length][];
+            int[][] halfTimeGoals = new int[matches.Length][];
 
-            foreach(Match match in matches)
-            {
-                if (match.TeamHomeGoal > match.TeamAwayGoal)
-                {
+            for (var i = 0; i < fullTimeGoals.Length; i++) {
+                fullTimeGoals[i] = new int[2];
+                fullTimeGoals[i][0] = matches[i].GetHomeGoals();
+                fullTimeGoals[i][1] = matches[i].GetAwayGoals();
 
-                    HomeWin++;
+                halfTimeGoals[i] = new int[2];
+                halfTimeGoals[i][0] = matches[i].GetHomeFirstHalfGoals();
+                halfTimeGoals[i][1] = matches[i].GetAwayFirstHalfGoals();
 
-                }
-                else if (match.TeamHomeGoal < match.TeamAwayGoal)
-                {
-                    AwayWin++;
-                }
-                else
-                {
-                    Draw++;
-                }
-                HomeGoals += (float) match.TeamHomeGoal;
-                AwayGoals += (float) match.TeamAwayGoal;
+
 
                 if(match.TeamHomeGoal > maxHomeGoals)
                 {
@@ -64,32 +55,80 @@ namespace SoccerModel
 
             }
 
+            FullTimeGoals = fullTimeGoals;
+            HalfTimeGoals = halfTimeGoals;
+
+
+
+
         }
 
-        private float[] GetWinDrawWinProbabilities()
+        private float[] GetWinDrawWinProbabilities(int[][] fullTimeGoalsArray)
         {
-            return new float[] { HomeWin / NumMatches, Draw / NumMatches, AwayWin / NumMatches };
+            int NumMatches = fullTimeGoalsArray.Length;
+            float HomeWins = 0, AwayWins = 0, Draws = 0;
+            foreach (var matchFullTimeGoals in fullTimeGoalsArray) {
+                if (matchFullTimeGoals[0] > matchFullTimeGoals[1])
+                    HomeWins++;
+                else if (matchFullTimeGoals[1] > matchFullTimeGoals[0])
+                    AwayWins++;
+                else
+                    Draws++;
+            }
+            return new float[] { HomeWins / NumMatches, Draws / NumMatches, AwayWins / NumMatches };
         }
 
-        private float GetAverageHomeGoals()
+        private float GetAverageHomeGoals(int[][] fullTimeGoalsArray)
         {
-            return HomeGoals / NumMatches;
+            float HomeGoals = 0;
+            foreach (var matchFullTimeGoals in fullTimeGoalsArray)
+            {
+                HomeGoals += matchFullTimeGoals[0]; 
+            }
+                return HomeGoals / fullTimeGoalsArray.Length;
         }
 
-        private float GetAverageAwayGoals()
+        private float GetAverageAwayGoals(int[][] fullTimeGoalsArray)
         {
-            return AwayGoals / NumMatches;
+            float AwayGoals = 0;
+            foreach (var matchFullTimeGoals in fullTimeGoalsArray)
+            {
+                AwayGoals += matchFullTimeGoals[1];
+            }
+            return AwayGoals / fullTimeGoalsArray.Length;
+        }
+
+        private float GetOverTwoPointFiveProbability(int[][] fullTimeGoalsArray)
+        {
+            float OverTwoPointFive = 0;
+            foreach (var matchFullTimeGoals in fullTimeGoalsArray)
+            {
+                if (matchFullTimeGoals[0]+ matchFullTimeGoals[1] > 2)
+                {
+                    OverTwoPointFive++;
+                }
+            }
+            return OverTwoPointFive / fullTimeGoalsArray.Length;
         }
 
         public  String GetResults()
         {
-            float[] wdw = GetWinDrawWinProbabilities();
-            float AverageHomeGoals = GetAverageHomeGoals();
-            float AverageAwayGoals = GetAverageAwayGoals();
 
-            return $"Home: {wdw[0]} Draw: {wdw[1]} Away: {wdw[2]}\nAverage Home Goals: {AverageHomeGoals} " +
-                $"\nAverage Away Goals: {AverageAwayGoals} \nMax Home Goals: {maxHomeGoals}\nMax Away Goals: {maxAwayGoals}" +
-                $"\nMin Home Goals: {MinHomeGoals}\nMin Away Goals: {MinAwayGoals}";
+//             float[] wdw = GetWinDrawWinProbabilities();
+//             float AverageHomeGoals = GetAverageHomeGoals();
+//             float AverageAwayGoals = GetAverageAwayGoals();
+
+//             return $"Home: {wdw[0]} Draw: {wdw[1]} Away: {wdw[2]}\nAverage Home Goals: {AverageHomeGoals} " +
+//                 $"\nAverage Away Goals: {AverageAwayGoals} \nMax Home Goals: {maxHomeGoals}\nMax Away Goals: {maxAwayGoals}" +
+//                 $"\nMin Home Goals: {MinHomeGoals}\nMin Away Goals: {MinAwayGoals}";
+            float[] wdw = GetWinDrawWinProbabilities(FullTimeGoals);
+            float[] HalfTimeWdw = GetWinDrawWinProbabilities(HalfTimeGoals);
+
+            return $@"FT Home: {wdw[0]} Draw: {wdw[1]} Away: {wdw[2]}
+HT Home: {HalfTimeWdw[0]} Draw: {HalfTimeWdw[1]} Away: {HalfTimeWdw[2]}
+Average Home Goals: {GetAverageHomeGoals(FullTimeGoals)}
+AverageAwayGoals: {GetAverageAwayGoals(FullTimeGoals)}
+Over 2.5 Probability: {GetOverTwoPointFiveProbability(FullTimeGoals)}";
         }
     }
 }
