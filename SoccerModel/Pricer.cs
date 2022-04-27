@@ -8,31 +8,61 @@ namespace SoccerModel
 {
     class Pricer
     {
-        private int HomeWin;
-        private int AwayWin;
-        private int Draw;
+        private float HomeWin;
+        private float AwayWin;
+        private float Draw;
+        private float HomeGoals;
+        private float AwayGoals;
+        private int NumMatches;
 
-        public void Price(Match match)
+        public void Price(Match[] matches)
         {
-            if (match.TeamHomeGoal > match.TeamAwayGoal)
-            {
+            NumMatches = matches.Length;
 
-                HomeWin++;
+            foreach(Match match in matches)
+            {
+                if (match.TeamHomeGoal > match.TeamAwayGoal)
+                {
+
+                    HomeWin++;
+
+                }
+                else if (match.TeamHomeGoal < match.TeamAwayGoal)
+                {
+                    AwayWin++;
+                }
+                else
+                {
+                    Draw++;
+                }
+                HomeGoals += (float) match.TeamHomeGoal;
+                AwayGoals += (float) match.TeamAwayGoal;
 
             }
-            else if (match.TeamHomeGoal < match.TeamAwayGoal)
-            {
-                AwayWin++;
-            }
-            else
-            {
-                Draw++;
-            }
+
         }
 
-        public override String ToString()
+        private float[] GetWinDrawWinProbabilities()
         {
-            return $"Home: {HomeWin} Draw: {Draw} Away: {AwayWin}";
+            return new float[] { HomeWin / NumMatches, Draw / NumMatches, AwayWin / NumMatches };
+        }
+
+        private float GetAverageHomeGoals()
+        {
+            return HomeGoals / NumMatches;
+        }
+
+        private float GetAverageAwayGoals()
+        {
+            return AwayGoals / NumMatches;
+        }
+
+        public  String GetResults()
+        {
+            float[] wdw = GetWinDrawWinProbabilities();
+            float AverageHomeGoals = GetAverageHomeGoals();
+
+            return $"Home: {wdw[0]} Draw: {wdw[1]} Away: {wdw[2]}\nAverage Home Goals: {AverageHomeGoals}";
         }
     }
 }
