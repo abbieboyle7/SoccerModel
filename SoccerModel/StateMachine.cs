@@ -57,7 +57,6 @@ namespace SoccerModel
         private State HomeGoal = new State(new float[] { 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f });
         private State AwayGoal = new State(new float[] { 0f, 1f, 0f, 0f, 0f, 0f, 0f, 0f });
 
-
         private double MatchTime = 0d;
 
         private Random NumberGen = new Random();

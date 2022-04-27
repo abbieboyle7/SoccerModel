@@ -35,23 +35,7 @@ namespace SoccerModel
 
 
 
-                if(match.TeamHomeGoal > maxHomeGoals)
-                {
-                    maxHomeGoals = match.TeamHomeGoal;
-                }
-                else if(match.TeamHomeGoal < MinHomeGoals)
-                {
-                    MinHomeGoals = match.TeamHomeGoal;
-                }
-
-                if (match.TeamAwayGoal > maxAwayGoals)
-                {
-                    maxAwayGoals = match.TeamAwayGoal;
-                }
-                else if(match.TeamAwayGoal < MinAwayGoals)
-                {
-                    MinAwayGoals = match.TeamAwayGoal;
-                }
+               
 
             }
 
