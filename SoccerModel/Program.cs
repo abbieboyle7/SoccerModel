@@ -15,7 +15,10 @@ namespace SoccerModel
 //            Random NumberGen = new Random();
 //            Console.WriteLine("Hello World");
 
-            new StateMachine().RunMatch();
+            Match match = new StateMachine().RunMatch();
+            var pricer = new Pricer();
+            pricer.Price(match);
+            Console.WriteLine(pricer);
 //            Console.WriteLine(NumberGen.NextDouble());
             Console.Read();
             

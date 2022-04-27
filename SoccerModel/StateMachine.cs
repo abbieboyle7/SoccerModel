@@ -35,11 +35,13 @@ namespace SoccerModel
             }
         }
 
-        public void RunMatch()
+        public Match RunMatch()
         {
-            while(MatchTime <= 90)
+            Match match = new Match();
+
+            while(match.IsMatchOver())
             {
-                MatchTime += 0.5;
+                match.IncrementTime();
                 double randNum = NumberGen.NextDouble();
 
                 if((randNum -= CurrentState.ToHomeDefence) < 0)
@@ -50,7 +52,9 @@ namespace SoccerModel
                     CurrentState = HomeAttack;
                 else if ((randNum -= CurrentState.ToHomeGoal) < 0) {
                     CurrentState = HomeGoal;
-                    Console.WriteLine("Home Goal!");
+
+                    match.AddHomeGoal();
+
                 }
                     
                 else if ((randNum -= CurrentState.ToAwayDefence) < 0)
@@ -61,13 +65,14 @@ namespace SoccerModel
                     CurrentState = AwayCenter;
                 else if ((randNum -= CurrentState.ToAwayGoal) < 0)
                 {
-                    Console.WriteLine("Away Goal!");
+                    match.AddAwayGoal();
                     CurrentState = AwayGoal;
                 }
                     
              
 
             }
+            return match;
 
         }
     }
@@ -98,4 +103,6 @@ namespace SoccerModel
             
         }
     }
+
+
 }
