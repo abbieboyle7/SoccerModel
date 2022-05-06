@@ -49,21 +49,19 @@ namespace SoccerModel
                     };
         */
         private State HomeDefence = new State(new float[] { 0.2f, 0.3f, 0.3f, 0f, 0f, 0.2f, 0f, 0f });
-        private State HomeCenter = new State(new float[] { 0.299f, 0.1f, 0.3f, 0f, 0.3f, 0f, 0.001f, 0f });
-        private State HomeAttack = new State(new float[] { 0.1f, 0.36f, 0.2f, 0.3f, 0f, 0f, 0.04f, 0f });
-        private State AwayDefence = new State(new float[] { 0f, 0f, 0.3f, 0.1f, 0.3f, 0.3f, 0f, 0f });
-        private State AwayCenter = new State(new float[] { 0f, 0.3f, 0f, 0.299f, 0.1f, 0.3f, 0f, 0.001f });
-        private State AwayAttack = new State(new float[] { 0.6f, 0f, 0f, 0.1f, 0.18f, 0.1f, 0f, 0.02f });
+        private State HomeCenter = new State(new float[] { 0.299f, 0.2f, 0.3f, 0f, 0.2f, 0f, 0.001f, 0f });
+        private State HomeAttack = new State(new float[] { 0.0f, 0.36f, 0.2f, 0.4f, 0f, 0f, 0.04f, 0f });
+        private State AwayDefence = new State(new float[] { 0f, 0f, 0.2f, 0.2f, 0.3f, 0.3f, 0f, 0f });
+        private State AwayCenter = new State(new float[] { 0f, 0.2f, 0f, 0.299f, 0.2f, 0.3f, 0f, 0.001f });
+        private State AwayAttack = new State(new float[] { 0.5f, 0f, 0f, 0.1f, 0.28f, 0.1f, 0f, 0.03f });
         private State HomeGoal = new State(new float[] { 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f });
         private State AwayGoal = new State(new float[] { 0f, 1f, 0f, 0f, 0f, 0f, 0f, 0f });
-
-        private double MatchTime = 0d;
 
         private Random NumberGen = new Random();
 
         public StateMachine()
         {
-            double StartNum = NumberGen.NextDouble();
+           double StartNum = NumberGen.NextDouble();
 
            if(StartNum > 0.5)
             {
@@ -73,6 +71,62 @@ namespace SoccerModel
             {
                 CurrentState = AwayCenter;
             }
+        }
+
+        public void TrainStateBasedOnInputProbabilities(float ExpectedHomeGoals, float ExpectedAwayGoals, int NumMatches, int Iterations)
+        {
+            Match[] new_matches = new Match[NumMatches];
+            var new_pricer = new Pricer();
+
+            for (int i = 0; i < Iterations; i++)
+            {
+                new_matches = new Match[NumMatches];
+
+                for (int j = 0; j < NumMatches; j++)
+                {
+                    new_matches[j] = this.RunMatch();
+
+                }
+
+                new_pricer.Price(new_matches);
+                this.AdjustModelBasedOnInputProbabilities(ExpectedHomeGoals, ExpectedAwayGoals, new_pricer.AverageHomeGoals(), new_pricer.AverageAwayGoals());
+
+                Console.WriteLine($"\nIteration: {i}\n");
+                Console.WriteLine(new_pricer.GetResults());
+            }
+        }
+
+        public void AdjustModelBasedOnInputProbabilities(float ExpectedHomeGoals, float ExpectedAwayGoals, float AverageHomeGoals, float AverageAwayGoals)
+        {
+            
+            if (HomeAttack.ToHomeGoal > 0.02f && HomeAttack.ToHomeCenter>0.02f && HomeCenter.ToHomeDefence > 0.02f)
+            {
+                HomeAttack.ToHomeGoal += 0.01 * (ExpectedHomeGoals-AverageHomeGoals);
+                HomeAttack.ToHomeCenter -= 0.01 * (ExpectedHomeGoals - AverageHomeGoals);
+                HomeCenter.ToHomeAttack += 0.01 * (ExpectedHomeGoals - AverageHomeGoals);
+                HomeCenter.ToAwayCenter -= 0.01 * (ExpectedHomeGoals - AverageHomeGoals);
+            }
+
+            if (AwayAttack.ToAwayGoal > 0.02f && AwayAttack.ToAwayCenter > 0.02f && AwayCenter.ToAwayDefence > 0.02f)
+            {
+                AwayAttack.ToAwayGoal += 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
+                AwayAttack.ToAwayCenter -= 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
+                AwayCenter.ToAwayAttack += 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
+                AwayCenter.ToHomeCenter -= 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
+            }
+
+            /*
+             * Attempt to adjust possession not really working
+             * 
+            if (true)
+            {
+                HomeCenter.ToHomeCenter += 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals-AverageAwayGoals));
+                HomeCenter.ToAwayCenter -= 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals - AverageAwayGoals));
+
+                AwayCenter.ToAwayCenter -= 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals - AverageAwayGoals));
+                AwayCenter.ToHomeCenter += 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals - AverageAwayGoals));
+            }
+            */
         }
 
         public Match RunMatch()
@@ -85,27 +139,58 @@ namespace SoccerModel
                 double randNum = NumberGen.NextDouble();
 
                 if((randNum -= CurrentState.ToHomeDefence) < 0)
+                {
                     CurrentState = HomeDefence;
+                    match.States.Add(0);
+                }
+                    
                 else if ((randNum -= CurrentState.ToHomeCenter) < 0)
+                {
                     CurrentState = HomeCenter;
+                    match.States.Add(1);
+                }
+                    
                 else if ((randNum -= CurrentState.ToHomeAttack) < 0)
+                {
                     CurrentState = HomeAttack;
+                    match.States.Add(2);
+                }
+                    
                 else if ((randNum -= CurrentState.ToHomeGoal) < 0) {
                     CurrentState = HomeGoal;
 
                     match.AddHomeGoal();
+                    match.States.Add(6);
 
                 }
                     
                 else if ((randNum -= CurrentState.ToAwayDefence) < 0)
+                {
                     CurrentState = AwayDefence;
-                else if ((randNum -= CurrentState.ToAwayAttack) < 0)
-                    CurrentState = AwayAttack;
+                    match.States.Add(3);
+                }
+
                 else if ((randNum -= CurrentState.ToAwayCenter) < 0)
+                {
                     CurrentState = AwayCenter;
+                    match.States.Add(4);
+
+                }
+
+                else if ((randNum -= CurrentState.ToAwayAttack) < 0)
+                {
+                    CurrentState = AwayAttack;
+                    match.States.Add(5);
+                }
+                    
+                
+                    
+
+
                 else if ((randNum -= CurrentState.ToAwayGoal) < 0)
                 {
                     match.AddAwayGoal();
+                    match.States.Add(7);
                     CurrentState = AwayGoal;
                 }
                     
@@ -119,14 +204,14 @@ namespace SoccerModel
 
     class State
     {
-        public double ToHomeDefence { get; }
-        public double ToHomeCenter { get; }
-        public double ToHomeAttack { get; }
-        public double ToAwayDefence { get; }
-        public double ToAwayCenter { get; }
-        public double ToAwayAttack { get; }
-        public double ToHomeGoal { get; }
-        public double ToAwayGoal { get; }
+        public double ToHomeDefence { get; set; }
+        public double ToHomeCenter { get; set; }
+        public double ToHomeAttack { get; set; }
+        public double ToAwayDefence { get; set; }
+        public double ToAwayCenter { get; set; }
+        public double ToAwayAttack { get; set; }
+        public double ToHomeGoal { get; set; }
+        public double ToAwayGoal { get; set; }
 
         public State(float[] stateTransitionProbabilities)
         {

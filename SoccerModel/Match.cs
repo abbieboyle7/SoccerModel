@@ -16,6 +16,7 @@ namespace SoccerModel
 
         public float CurrentTime { get; set; }
 
+       
         public void AddHomeGoal()
         {
             HomeGoals.Add(CurrentTime);
@@ -62,6 +63,33 @@ namespace SoccerModel
                 }
             }
             return goals;
+        }
+
+        public float[] GetPossession()
+        {
+            float homePossesion = 0f;
+            float awayPossesion = 0f;
+            float num_goals = 0f;
+
+            foreach (int state in States)
+
+            {
+                if (state <= 2)
+                {
+                    homePossesion++;
+                }
+                else if (state >= 3 && state <= 5)
+                {
+                    awayPossesion++;
+                }
+                else
+                {
+                    num_goals++;
+                }
+            }
+
+            float[] result = {homePossesion/(States.Count-num_goals),awayPossesion/(States.Count-num_goals)};
+            return result;
         }
 
         public void IncrementTime()
