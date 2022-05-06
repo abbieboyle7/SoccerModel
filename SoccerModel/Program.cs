@@ -27,8 +27,8 @@ namespace SoccerModel
             }
             */
 
-            float expectedHomeGoals = 3f;
-            float expectedAwayGoals = 1.2f;
+            float expectedHomeGoals = 2f;
+            float expectedAwayGoals = 2f;
             int iterations = 30;
 
             Console.WriteLine($"Expected Home Goals: {expectedHomeGoals}");

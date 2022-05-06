@@ -98,21 +98,36 @@ namespace SoccerModel
 
         public void AdjustModelBasedOnInputProbabilities(float ExpectedHomeGoals, float ExpectedAwayGoals, float AverageHomeGoals, float AverageAwayGoals)
         {
-            
-            if (HomeAttack.ToHomeGoal > 0.02f && HomeAttack.ToHomeCenter>0.02f && HomeCenter.ToHomeDefence > 0.02f)
+            float adjustHomeGoalChances = 0.01f * (ExpectedHomeGoals - AverageHomeGoals);
+            float adjustAwayGoalChances = 0.01f * (ExpectedAwayGoals - AverageAwayGoals);
+
+            float newHomeAttackToHomeGoal = (float) HomeAttack.ToHomeGoal + adjustHomeGoalChances;
+            float newHomeAttackToHomeCenter = (float) HomeAttack.ToHomeCenter - adjustHomeGoalChances;
+            float newHomeCenterToHomeAttack = (float)HomeCenter.ToHomeAttack + adjustHomeGoalChances;
+            float newHomeCenterToAwayCenter = (float)HomeCenter.ToAwayCenter - adjustHomeGoalChances;
+
+            float newAwayAttackToAwayGoal = (float)AwayAttack.ToAwayGoal + adjustAwayGoalChances;
+            float newAwayAttackToAwayCenter = (float)AwayAttack.ToAwayCenter - adjustAwayGoalChances;
+            float newAwayCenterToAwayAttack = (float)AwayCenter.ToAwayAttack + adjustAwayGoalChances;
+            float newAwayCenterToHomeCenter = (float)AwayCenter.ToHomeCenter - adjustAwayGoalChances;
+
+
+            if (newHomeAttackToHomeGoal > 0f && newHomeAttackToHomeCenter > 0f && newHomeCenterToHomeAttack > 0f && newHomeCenterToAwayCenter > 0f)
             {
-                HomeAttack.ToHomeGoal += 0.01 * (ExpectedHomeGoals-AverageHomeGoals);
-                HomeAttack.ToHomeCenter -= 0.01 * (ExpectedHomeGoals - AverageHomeGoals);
-                HomeCenter.ToHomeAttack += 0.01 * (ExpectedHomeGoals - AverageHomeGoals);
-                HomeCenter.ToAwayCenter -= 0.01 * (ExpectedHomeGoals - AverageHomeGoals);
+                HomeAttack.ToHomeGoal = newHomeAttackToHomeGoal;
+                HomeAttack.ToHomeCenter = newHomeAttackToHomeCenter;
+                HomeCenter.ToHomeAttack = newHomeCenterToHomeAttack;
+                HomeCenter.ToAwayCenter = newHomeCenterToAwayCenter;
             }
 
-            if (AwayAttack.ToAwayGoal > 0.02f && AwayAttack.ToAwayCenter > 0.02f && AwayCenter.ToAwayDefence > 0.02f)
+
+
+            if (newAwayAttackToAwayGoal > 0f && newAwayAttackToAwayCenter > 0f && newAwayCenterToAwayAttack > 0f && newAwayCenterToHomeCenter > 0f)
             {
-                AwayAttack.ToAwayGoal += 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
-                AwayAttack.ToAwayCenter -= 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
-                AwayCenter.ToAwayAttack += 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
-                AwayCenter.ToHomeCenter -= 0.01 * (ExpectedAwayGoals - AverageAwayGoals);
+                AwayAttack.ToAwayGoal = newAwayAttackToAwayGoal;
+                AwayAttack.ToAwayCenter = newAwayAttackToAwayCenter;
+                AwayCenter.ToAwayAttack = newAwayCenterToAwayAttack;
+                AwayCenter.ToHomeCenter = newAwayCenterToHomeCenter;
             }
 
             /*
