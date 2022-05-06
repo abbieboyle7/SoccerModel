@@ -36,15 +36,15 @@ namespace SoccerModel
             Console.WriteLine($"Probablity for 2 - 1: {(int)(pricer.PriceExactScore(2f, 1f) * 100f)}%");
             Console.WriteLine($"Probablity for 1 - 2: {(int)(pricer.PriceExactScore(1f, 2f) * 100f)}%");
             Console.WriteLine($"Probablity for 2 - 2: {(int)(pricer.PriceExactScore(2f, 2f) * 100f)}%");
-            Console.WriteLine($"Probablity for 4 - 0: {(pricer.PriceExactScore(4f, 0f) * 100f)}%"); 
-            Console.WriteLine($"Probablity for 0 - 4: {(pricer.PriceExactScore(0f, 4f) * 100f)}%");
-            Console.WriteLine($"Probablity for 6 - 1: {(pricer.PriceExactScore(6f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 4 - 0: {Math.Round((pricer.PriceExactScore(4f, 0f) * 100f))}%"); 
+            Console.WriteLine($"Probablity for 0 - 4: {Math.Round((pricer.PriceExactScore(0f, 4f) * 100f))}%");
+            Console.WriteLine($"Probablity for 6 - 1: {Math.Round((pricer.PriceExactScore(6f, 1f) * 100f))}%");
 
 
 
-            float expectedHomeGoals = 3f;
-            float expectedAwayGoals = 1f;
-            int iterations = 10;
+            float expectedHomeGoals = 2.4f;
+            float expectedAwayGoals = 1.2f;
+            int iterations = 16;
 
             Console.WriteLine($"\nExpected Home Goals: {expectedHomeGoals}");
             Console.WriteLine($"Expected Away Goals: {expectedAwayGoals}");

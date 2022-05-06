@@ -156,13 +156,13 @@ namespace SoccerModel
             return $@"FT Home: {(int) (wdw[0] * 100f)}% Draw: {(int) (wdw[1] * 100f)}% Away: {(int) (wdw[2] * 100f)}%
 HT Home: {(int) (HalfTimeWdw[0]*100f)}% Draw: {(int) (HalfTimeWdw[1] * 100f)}% Away: {(int) (HalfTimeWdw[2] * 100f)}%
 
-Average Home Possession: {AveragePossession[0]*100f} %
-Average Away Possession: {AveragePossession[1]*100f} %
+Average Home Possession: {Math.Round(AveragePossession[0]*100f, 2)} %
+Average Away Possession: {Math.Round(AveragePossession[1]*100f, 2)} %
 
 Over 2.5 Probability: {(int) (GetOverTwoPointFiveProbability(FullTimeGoals) * 100f)}%
 
-Average Home Goals: {GetAverageHomeGoals(FullTimeGoals)}
-Average Away Goals: {GetAverageAwayGoals(FullTimeGoals)}";
+Average Home Goals: {Math.Round(GetAverageHomeGoals(FullTimeGoals), 2)}
+Average Away Goals: {Math.Round(GetAverageAwayGoals(FullTimeGoals), 2)}";
         }
     }
 }
