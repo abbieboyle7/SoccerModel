@@ -83,6 +83,21 @@ namespace SoccerModel
             return AwayGoals / fullTimeGoalsArray.Length;
         }
 
+        public float PriceExactScore(float HomeGoals, float AwayGoals)
+        {
+            float InstancesOfExactScore = 0f;
+
+            for (int i = 0; i < FullTimeGoals.Length; i++)
+            {
+                if (FullTimeGoals[i][0] == HomeGoals && FullTimeGoals[i][1] == AwayGoals)
+                {
+                    InstancesOfExactScore++;
+                }
+            }
+
+            return InstancesOfExactScore/FullTimeGoals.Length;
+        }
+
         private float[] GetAveragePossesion(float[][] Possessions)
         {
             float homePossession = 0f;
@@ -138,13 +153,13 @@ namespace SoccerModel
             float[] HalfTimeWdw = GetWinDrawWinProbabilities(HalfTimeGoals);
             float[] AveragePossession = GetAveragePossesion(_Possessions);
 
-            return $@"FT Home: {wdw[0]} Draw: {wdw[1]} Away: {wdw[2]}
-HT Home: {HalfTimeWdw[0]} Draw: {HalfTimeWdw[1]} Away: {HalfTimeWdw[2]}
+            return $@"FT Home: {(int) (wdw[0] * 100f)}% Draw: {(int) (wdw[1] * 100f)}% Away: {(int) (wdw[2] * 100f)}%
+HT Home: {(int) (HalfTimeWdw[0]*100f)}% Draw: {(int) (HalfTimeWdw[1] * 100f)}% Away: {(int) (HalfTimeWdw[2] * 100f)}%
 
-Average Home Possession: {AveragePossession[0]}
-Average Away Possession: {AveragePossession[1]}
+Average Home Possession: {AveragePossession[0]*100f} %
+Average Away Possession: {AveragePossession[1]*100f} %
 
-Over 2.5 Probability: {GetOverTwoPointFiveProbability(FullTimeGoals)}
+Over 2.5 Probability: {(int) (GetOverTwoPointFiveProbability(FullTimeGoals) * 100f)}%
 
 Average Home Goals: {GetAverageHomeGoals(FullTimeGoals)}
 Average Away Goals: {GetAverageAwayGoals(FullTimeGoals)}";

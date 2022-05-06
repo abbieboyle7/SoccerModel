@@ -15,7 +15,7 @@ namespace SoccerModel
         {
 //            Random NumberGen = new Random();
 //            Console.WriteLine("Hello World");
-            /*
+            
 
             Match[] matches = new Match[num_matches];
 
@@ -25,20 +25,56 @@ namespace SoccerModel
             {
                 matches[i] = new StateMachine().RunMatch();
             }
-            */
 
-            float expectedHomeGoals = 2f;
-            float expectedAwayGoals = 2f;
-            int iterations = 30;
+            Pricer pricer = new Pricer();
 
-            Console.WriteLine($"Expected Home Goals: {expectedHomeGoals}");
+            pricer.Price(matches);
+            Console.WriteLine($"Probablity for 0 - 0: {(int) (pricer.PriceExactScore(0f, 0f) * 100f)}%");
+            Console.WriteLine($"Probablity for 1 - 0: {(int)(pricer.PriceExactScore(1f, 0f) * 100f)}%");
+            Console.WriteLine($"Probablity for 0 - 1: {(int)(pricer.PriceExactScore(0f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 1 - 1: {(int)(pricer.PriceExactScore(1f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 2 - 1: {(int)(pricer.PriceExactScore(2f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 1 - 2: {(int)(pricer.PriceExactScore(1f, 2f) * 100f)}%");
+            Console.WriteLine($"Probablity for 2 - 2: {(int)(pricer.PriceExactScore(2f, 2f) * 100f)}%");
+            Console.WriteLine($"Probablity for 4 - 0: {(pricer.PriceExactScore(4f, 0f) * 100f)}%"); 
+            Console.WriteLine($"Probablity for 0 - 4: {(pricer.PriceExactScore(0f, 4f) * 100f)}%");
+            Console.WriteLine($"Probablity for 6 - 1: {(pricer.PriceExactScore(6f, 1f) * 100f)}%");
+
+
+
+            float expectedHomeGoals = 3f;
+            float expectedAwayGoals = 1f;
+            int iterations = 10;
+
+            Console.WriteLine($"\nExpected Home Goals: {expectedHomeGoals}");
             Console.WriteLine($"Expected Away Goals: {expectedAwayGoals}");
 
             StateMachine stateMachine = new StateMachine();
 
+
+
             stateMachine.TrainStateBasedOnInputProbabilities(expectedHomeGoals, expectedAwayGoals, num_matches, iterations);
 
+
             
+            for (int i = 0; i < num_matches; i++)
+            {
+                matches[i] = stateMachine.RunMatch();
+            }
+
+            pricer.Price(matches);
+
+
+            Console.WriteLine($"\nProbablity for 0 - 0: {(int)(pricer.PriceExactScore(0f, 0f) * 100f)}%");
+            Console.WriteLine($"Probablity for 1 - 0: {(int)(pricer.PriceExactScore(1f, 0f) * 100f)}%");
+            Console.WriteLine($"Probablity for 0 - 1: {(int)(pricer.PriceExactScore(0f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 1 - 1: {(int)(pricer.PriceExactScore(1f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 2 - 1: {(int)(pricer.PriceExactScore(2f, 1f) * 100f)}%");
+            Console.WriteLine($"Probablity for 1 - 2: {(int)(pricer.PriceExactScore(1f, 2f) * 100f)}%");
+            Console.WriteLine($"Probablity for 2 - 2: {(int)(pricer.PriceExactScore(2f, 2f) * 100f)}%");
+            Console.WriteLine($"Probablity for 4 - 0: {(int)(pricer.PriceExactScore(4f, 0f) * 100f)}%");
+            Console.WriteLine($"Probablity for 0 - 4: {(pricer.PriceExactScore(0f, 4f) * 100f)}%");
+            Console.WriteLine($"Probablity for 6 - 1: {(pricer.PriceExactScore(6f, 1f) * 100f)}%");
 
             Console.Read();
             
