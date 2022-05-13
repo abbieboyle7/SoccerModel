@@ -82,6 +82,8 @@ namespace SoccerModel
 
 
             AdjustPossessionBasedOnDifferenceInStrength(expectedHomeGoals, expectedAwayGoals);
+
+            TrainStateBasedOnInputProbabilities(expectedHomeGoals, expectedAwayGoals, 5000, 10);
         }
 
         
@@ -104,8 +106,8 @@ namespace SoccerModel
                 new_pricer.Price(new_matches);
                 this.AdjustModelBasedOnInputProbabilities(ExpectedHomeGoals, ExpectedAwayGoals, new_pricer.AverageHomeGoals(), new_pricer.AverageAwayGoals());
 
-                Console.WriteLine($"\nIteration: {i}\n");
-                Console.WriteLine(new_pricer.GetResults());
+                //Console.WriteLine($"\nIteration: {i}\n");
+                //Console.WriteLine(new_pricer.GetResults());
             }
 
             

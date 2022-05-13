@@ -17,34 +17,34 @@ namespace SoccerModel
 
             //            Random NumberGen = new Random();
             //            Console.WriteLine("Hello World");
-            float expectedHomeGoals = 1f;
-            float expectedAwayGoals = 1f;
-            int iterations = 5;
-
-            Match[] matches = new Match[num_matches];
-
-            
-
-            for (int i = 0; i < num_matches; i++)
-            {
-                matches[i] = new StateMachine(expectedHomeGoals,expectedAwayGoals).RunMatch();
-            }
-
-            Pricer pricer = new Pricer();
-
-
-
-            pricer.Price(matches);
-
-            //Console.WriteLine(pricer.GetResults());
-
-
-
-            
+            float expectedHomeGoals = 3f;
+            float expectedAwayGoals = 2f;
             
 
             Console.WriteLine($"\nExpected Home Goals: {expectedHomeGoals}");
             Console.WriteLine($"Expected Away Goals: {expectedAwayGoals}");
+
+            Match[] matches = new Match[num_matches];
+
+            StateMachine stateMachine1 = new StateMachine(expectedHomeGoals, expectedAwayGoals);
+
+            for (int i = 0; i < num_matches; i++)
+            {
+                matches[i] = stateMachine1.RunMatch();
+            }
+
+            Pricer pricer = new Pricer();
+
+            pricer.Price(matches);
+
+            Console.WriteLine(pricer.GetResults());
+
+
+
+
+
+            /*
+            int iterations = 5;
 
             StateMachine stateMachine = new StateMachine(expectedHomeGoals,expectedAwayGoals);
 
@@ -60,6 +60,7 @@ namespace SoccerModel
             }
 
             pricer.Price(matches);
+            */
 
 
             Console.WriteLine($"\nProbablity for 0 - 0: {(int)(pricer.PriceExactScore(0f, 0f) * 100f)}%");
