@@ -9,13 +9,17 @@ namespace SoccerModel
 {
     class Program
     {
-        private const int num_matches = 400000;
+        private const int num_matches = 50000;
         
         static void Main(string[] args)
         {
-//            Random NumberGen = new Random();
-//            Console.WriteLine("Hello World");
-            
+
+
+            //            Random NumberGen = new Random();
+            //            Console.WriteLine("Hello World");
+            float expectedHomeGoals = 1f;
+            float expectedAwayGoals = 1f;
+            int iterations = 5;
 
             Match[] matches = new Match[num_matches];
 
@@ -23,33 +27,26 @@ namespace SoccerModel
 
             for (int i = 0; i < num_matches; i++)
             {
-                matches[i] = new StateMachine().RunMatch();
+                matches[i] = new StateMachine(expectedHomeGoals,expectedAwayGoals).RunMatch();
             }
 
             Pricer pricer = new Pricer();
 
+
+
             pricer.Price(matches);
-            Console.WriteLine($"Probablity for 0 - 0: {(int) (pricer.PriceExactScore(0f, 0f) * 100f)}%");
-            Console.WriteLine($"Probablity for 1 - 0: {(int)(pricer.PriceExactScore(1f, 0f) * 100f)}%");
-            Console.WriteLine($"Probablity for 0 - 1: {(int)(pricer.PriceExactScore(0f, 1f) * 100f)}%");
-            Console.WriteLine($"Probablity for 1 - 1: {(int)(pricer.PriceExactScore(1f, 1f) * 100f)}%");
-            Console.WriteLine($"Probablity for 2 - 1: {(int)(pricer.PriceExactScore(2f, 1f) * 100f)}%");
-            Console.WriteLine($"Probablity for 1 - 2: {(int)(pricer.PriceExactScore(1f, 2f) * 100f)}%");
-            Console.WriteLine($"Probablity for 2 - 2: {(int)(pricer.PriceExactScore(2f, 2f) * 100f)}%");
-            Console.WriteLine($"Probablity for 4 - 0: {Math.Round((pricer.PriceExactScore(4f, 0f) * 100f))}%"); 
-            Console.WriteLine($"Probablity for 0 - 4: {Math.Round((pricer.PriceExactScore(0f, 4f) * 100f))}%");
-            Console.WriteLine($"Probablity for 6 - 1: {Math.Round((pricer.PriceExactScore(6f, 1f) * 100f))}%");
+
+            //Console.WriteLine(pricer.GetResults());
 
 
 
-            float expectedHomeGoals = 2.4f;
-            float expectedAwayGoals = 1.2f;
-            int iterations = 16;
+            
+            
 
             Console.WriteLine($"\nExpected Home Goals: {expectedHomeGoals}");
             Console.WriteLine($"Expected Away Goals: {expectedAwayGoals}");
 
-            StateMachine stateMachine = new StateMachine();
+            StateMachine stateMachine = new StateMachine(expectedHomeGoals,expectedAwayGoals);
 
 
 
@@ -77,12 +74,12 @@ namespace SoccerModel
             Console.WriteLine($"Probablity for 6 - 1: {(pricer.PriceExactScore(6f, 1f) * 100f)}%");
 
             Console.Read();
-            
-          
-        
+           
 
 
-    }
+
+
+        }
     }
 
    
