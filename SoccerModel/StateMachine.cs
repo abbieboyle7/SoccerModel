@@ -17,17 +17,7 @@ namespace SoccerModel
     private State HomeGoal = new State(0, 0, 0, 0, 1, 0, 0, 0);
     private State AwayGoal = new State(0, 1, 0, 0, 0, 0, 0, 0);
 
-    Home wins: 65%
-    Draw: 20%
-    Away wins: 15%
 
-    Average home goals: 1.4
-    Average away goals: 0.4
-
-    Max Home Goals: 5
-    Max Away Goals: 3
-    Min Home Goals: 0
-    Min Away Goals: 0
 
     */
 
@@ -62,6 +52,8 @@ namespace SoccerModel
 
         private Random NumberGen = new Random();
 
+        public Pricer _Pricer { get;}
+
         public StateMachine(float expectedHomeGoals, float expectedAwayGoals)
         {
            double StartNum = NumberGen.NextDouble();
@@ -83,9 +75,29 @@ namespace SoccerModel
 
             AdjustPossessionBasedOnDifferenceInStrength(expectedHomeGoals, expectedAwayGoals);
 
-            TrainStateBasedOnInputProbabilities(expectedHomeGoals, expectedAwayGoals, 5000, 10);
+            TrainStateBasedOnInputProbabilities(expectedHomeGoals, expectedAwayGoals, 5000, 20);
+
+            _Pricer = Price(50000, expectedHomeGoals, expectedAwayGoals);
         }
 
+        public Pricer Price(int num_matches, float expectedHomeGoals, float expectedAwayGoals)
+        {
+            Match[] matches = new Match[num_matches];
+
+            
+
+            for (int i = 0; i < num_matches; i++)
+            {
+                matches[i] = RunMatch();
+            }
+
+            Pricer pricer = new Pricer();
+
+            pricer.Price(matches);
+
+
+            return pricer;
+        }
         
 
         public void TrainStateBasedOnInputProbabilities(float ExpectedHomeGoals, float ExpectedAwayGoals, int NumMatches, int Iterations)
@@ -106,8 +118,7 @@ namespace SoccerModel
                 new_pricer.Price(new_matches);
                 this.AdjustModelBasedOnInputProbabilities(ExpectedHomeGoals, ExpectedAwayGoals, new_pricer.AverageHomeGoals(), new_pricer.AverageAwayGoals());
 
-                //Console.WriteLine($"\nIteration: {i}\n");
-                //Console.WriteLine(new_pricer.GetResults());
+
             }
 
             
@@ -152,46 +163,32 @@ namespace SoccerModel
                 AwayCenter.ToHomeCenter = newAwayCenterToHomeCenter;
             }
 
-
-
-            /*
-             * Attempt to adjust possession not really working
-             * 
-            if (true)
-            {
-                HomeCenter.ToHomeCenter += 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals-AverageAwayGoals));
-                HomeCenter.ToAwayCenter -= 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals - AverageAwayGoals));
-
-                AwayCenter.ToAwayCenter -= 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals - AverageAwayGoals));
-                AwayCenter.ToHomeCenter += 0.01 * ((ExpectedHomeGoals - AverageHomeGoals) - (AverageHomeGoals - AverageAwayGoals));
-            }
-            */
         }
 
         public void AdjustPossessionBasedOnDifferenceInStrength(float expectedHomeGoals, float expectedAwayGoals)
         {
             float differenceInGoals = expectedHomeGoals - expectedAwayGoals;
-            if (differenceInGoals > 3f)
+            if (differenceInGoals > 2.5f)
             {
-                differenceInGoals = 3f;
+                differenceInGoals = 2.5f;
             }
             
-            if (differenceInGoals < -3f)
+            if (differenceInGoals < -2.5f)
             {
-                differenceInGoals = -3f;
+                differenceInGoals = -2.5f;
             }
 
 
-            if (HomeCenter.ToHomeCenter + 0.04 * differenceInGoals > 0 && HomeCenter.ToAwayCenter - 0.4 * differenceInGoals >0)
+            if (HomeCenter.ToHomeCenter + 0.05 * differenceInGoals > 0 && HomeCenter.ToAwayCenter - (0.05 * differenceInGoals) >0)
             {
-                HomeCenter.ToHomeCenter += 0.04 * differenceInGoals;
-                HomeCenter.ToAwayCenter -= 0.04 * differenceInGoals;
+                HomeCenter.ToHomeCenter += 0.05 * differenceInGoals;
+                HomeCenter.ToAwayCenter -= 0.05 * differenceInGoals;
             }
 
-            if (AwayCenter.ToAwayCenter + 0.04 * differenceInGoals > 0 && AwayCenter.ToHomeCenter - 0.04 * differenceInGoals > 0)
+            if (AwayCenter.ToAwayCenter + 0.05 * differenceInGoals > 0 && AwayCenter.ToHomeCenter - 0.05 * differenceInGoals > 0)
             {
-                AwayCenter.ToAwayCenter -= 0.04 * differenceInGoals;
-                AwayCenter.ToHomeCenter += 0.04 * differenceInGoals;
+                AwayCenter.ToAwayCenter -= 0.05 * differenceInGoals;
+                AwayCenter.ToHomeCenter += 0.05 * differenceInGoals;
             }
 
                 
