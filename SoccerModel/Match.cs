@@ -8,12 +8,16 @@ namespace SoccerModel
 {
     class Match
     {
+        //This is a list of minutes the home team scored eg: {5, 41, 88} - home team scored 3 goals in minute 5 , 41, 88
         public List<float> HomeGoals = new List<float>();
 
+        //This is a list of minutes the home team scored eg: {60} - home team scored 1 goal in minute 60
         public List<float> AwayGoals = new List<float>();
 
+        //This is a list of integers, each representing a 'state'
+        //0: HomeDefence, 1: HomeCenter, 2: HomeAttack, 3: AwayDefence, 4: AwayCenter, 5: AwayAttack, 6: HomeGoal, 7: AwayGoal
+        //At the end of a Match this list will have 90 integers each representing one of the above states
         public List <int> States = new List<int>();
-
         public float CurrentTime { get; set; }
 
        

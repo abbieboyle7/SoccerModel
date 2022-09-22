@@ -21,6 +21,14 @@ namespace SoccerModel
 
     */
 
+    //The State Machine simulates matches : See RunMatch()
+
+    //The probalities of changing from one state to another are currently set below:
+    //See private State HomeDefence = new State(new float[] { 0.2f, 0.3f, 0.3f, 0f, 0f, 0.2f, 0f, 0f }); etc.
+
+    //Multiple matches are simulated in the Price() method
+    //This generates an array of Matches and Prices them using Pricer.cs
+
     class StateMachine
     {
         private State CurrentState;
@@ -265,32 +273,6 @@ namespace SoccerModel
             }
             return match;
 
-        }
-    }
-
-    class State
-    {
-        public double ToHomeDefence { get; set; }
-        public double ToHomeCenter { get; set; }
-        public double ToHomeAttack { get; set; }
-        public double ToAwayDefence { get; set; }
-        public double ToAwayCenter { get; set; }
-        public double ToAwayAttack { get; set; }
-        public double ToHomeGoal { get; set; }
-        public double ToAwayGoal { get; set; }
-
-        public State(float[] stateTransitionProbabilities)
-        {
-            this.ToHomeDefence = stateTransitionProbabilities[0];
-            this.ToHomeCenter = stateTransitionProbabilities[1];
-            this.ToHomeAttack = stateTransitionProbabilities[2];
-            this.ToAwayDefence = stateTransitionProbabilities[3];
-            this.ToAwayCenter = stateTransitionProbabilities[4];
-            this.ToAwayAttack = stateTransitionProbabilities[5];
-            this.ToHomeGoal = stateTransitionProbabilities[6];
-            this.ToAwayGoal = stateTransitionProbabilities[7];
-
-            
         }
     }
 

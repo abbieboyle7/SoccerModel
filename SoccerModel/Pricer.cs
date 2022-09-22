@@ -13,7 +13,11 @@ namespace SoccerModel
         private float[][] _Possessions;
 
        
+        //Pricer takes an array of simulated Matches which now have Home Goals, Away Goals, and a List of States
+        //It uses the outcomes of these matches to generate probabilites
 
+        //Example 1,000 matches, there were more Home Goals than Away Goals in 500 of those matches
+        //Probabilty of Home Win: 0.5 (50%)
         public void Price(Match[] matches)
         {
             int[][] fullTimeGoals = new int[matches.Length][];
