@@ -222,7 +222,8 @@ namespace SoccerModel
                     match.States.Add(2);
                 }
                     
-                else if ((randNum -= CurrentState.ToHomeGoal) < 0) {
+                else if ((randNum -= CurrentState.ToHomeGoal) < 0) 
+                {
                     CurrentState = HomeGoal;
 
                     match.AddHomeGoal();
